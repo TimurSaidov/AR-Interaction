@@ -44,6 +44,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let position = result.worldTransform.columns.3 // Матрица, однозначно определяющая координаты объекта. В 3 колонке находятся те координаты, которые можно присвоить hoopNode, для того чтобы кольцо расположилось в том месте, где произошло пересечие луча от нажатия пользователем на экран с визуальзированной плоскостью.
         hoopNode.position = SCNVector3(position.x, position.y, position.z)
         
+        hoopNode.physicsBody = SCNPhysicsBody(type: SCNPhysicsBodyType.static, shape: SCNPhysicsShape(node: hoopNode, options: [:]))
+        
         sceneView.scene.rootNode.addChildNode(hoopNode)
     }
     
@@ -78,7 +80,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let physicsBody = SCNPhysicsBody(type: SCNPhysicsBodyType.dynamic, shape: SCNPhysicsShape(node: ballNode))
         ballNode.physicsBody = physicsBody // Физическое тело в виде мяча, связанное с ballNode (узлом мяча). Поскольку оно динамическое, на него действуют различные силы (например, сила тяжести). Чтобы физическое тело существовало, в ноде обязательно должен быть объект, то есть геометрия. Т.о. в ноде не просто объект, а объект, являющийся динамическим телом.
         
-        let power = Float(10) // Модуль силы, которая противодействует силе тяжести.
+        let power = Float(10) // Модуль силы.
         let force = SCNVector3(-transform.m31 * power, -transform.m32 * power, -transform.m33 * power) // Вектор силы, усилие. Отрицательные координаты силы потому, что мяч должен лететь в сторону, куда смотрит камера, от нас.
         ballNode.physicsBody?.applyForce(force, asImpulse: true) // asImpulse: false - постояннно действующая сила.
         
