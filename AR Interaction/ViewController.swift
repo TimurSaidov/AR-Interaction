@@ -44,8 +44,8 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let position = result.worldTransform.columns.3 // Матрица, однозначно определяющая координаты объекта. В 3 колонке находятся те координаты, которые можно присвоить hoopNode, для того чтобы кольцо расположилось в том месте, где произошло пересечие луча от нажатия пользователем на экран с визуальзированной плоскостью.
         hoopNode.position = SCNVector3(position.x, position.y, position.z)
         
-        hoopNode.physicsBody = SCNPhysicsBody(type: SCNPhysicsBodyType.static, shape: SCNPhysicsShape(node: hoopNode, options: [:]))
-        
+        hoopNode.physicsBody = SCNPhysicsBody(type: SCNPhysicsBodyType.static, shape: SCNPhysicsShape(node: hoopNode, options: [SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.concavePolyhedron])) // concavePolyhedron - очень близко следует форме геометрии ноды hoopNode.
+
         sceneView.scene.rootNode.addChildNode(hoopNode)
     }
     
@@ -77,6 +77,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         let transform = SCNMatrix4(currentFrame.camera.transform) // Положение камеры и ее ориентация.
         ballNode.transform = transform // Матрица 4х4, однозначно определяющая положение объекта в пространстве.
 
+//        let physicsBody = SCNPhysicsBody(type: SCNPhysicsBodyType.dynamic, shape: SCNPhysicsShape(geometry: ball))
         let physicsBody = SCNPhysicsBody(type: SCNPhysicsBodyType.dynamic, shape: SCNPhysicsShape(node: ballNode))
         ballNode.physicsBody = physicsBody // Физическое тело в виде мяча, связанное с ballNode (узлом мяча). Поскольку оно динамическое, на него действуют различные силы (например, сила тяжести). Чтобы физическое тело существовало, в ноде обязательно должен быть объект, то есть геометрия. Т.о. в ноде не просто объект, а объект, являющийся динамическим телом.
         
