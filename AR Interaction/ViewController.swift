@@ -71,11 +71,16 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         let ballNode = SCNNode(geometry: SCNSphere(radius: 0.25))
         ballNode.geometry?.firstMaterial?.diffuse.contents = UIColor.orange
-        
-        ballNode.transform = SCNMatrix4(currentFrame.camera.transform) // Матрица 4х4, однозначно определяющая положение объекта в пространстве.
-        
+
+        let transform = SCNMatrix4(currentFrame.camera.transform) // Положение камеры и ее ориентация.
+        ballNode.transform = transform // Матрица 4х4, однозначно определяющая положение объекта в пространстве.
+
         let physicsBody = SCNPhysicsBody(type: SCNPhysicsBodyType.dynamic, shape: SCNPhysicsShape(node: ballNode))
-        ballNode.physicsBody = physicsBody // Физическое тело в виде мяча, связанное с ballNode (узлом мяча).
+        ballNode.physicsBody = physicsBody // Физическое тело в виде мяча, связанное с ballNode (узлом мяча). Поскольку оно динамическое, на него действуют различные силы (например, сила тяжести). Чтобы физическое тело существовало, в ноде обязательно должен быть объект, то есть геометрия. Т.о. в ноде не просто объект, а объект, являющийся динамическим телом.
+        
+        let power = Float(10) // Модуль силы, которая противодействует силе тяжести.
+        let force = SCNVector3(-transform.m31 * power, -transform.m32 * power, -transform.m33 * power) // Вектор силы, усилие. Отрицательные координаты силы потому, что мяч должен лететь в сторону, куда смотрит камера, от нас.
+        ballNode.physicsBody?.applyForce(force, asImpulse: true) // asImpulse: false - постояннно действующая сила.
         
         sceneView.scene.rootNode.addChildNode(ballNode)
     }
