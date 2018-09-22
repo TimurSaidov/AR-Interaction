@@ -74,6 +74,9 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         
         ballNode.transform = SCNMatrix4(currentFrame.camera.transform) // Матрица 4х4, однозначно определяющая положение объекта в пространстве.
         
+        let physicsBody = SCNPhysicsBody(type: SCNPhysicsBodyType.dynamic, shape: SCNPhysicsShape(node: ballNode))
+        ballNode.physicsBody = physicsBody // Физическое тело в виде мяча, связанное с ballNode (узлом мяча).
+        
         sceneView.scene.rootNode.addChildNode(ballNode)
     }
     
