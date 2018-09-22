@@ -78,7 +78,7 @@ class ViewController: UIViewController, ARSCNViewDelegate {
         ballNode.transform = transform // Матрица 4х4, однозначно определяющая положение объекта в пространстве.
 
 //        let physicsBody = SCNPhysicsBody(type: SCNPhysicsBodyType.dynamic, shape: SCNPhysicsShape(geometry: ball))
-        let physicsBody = SCNPhysicsBody(type: SCNPhysicsBodyType.dynamic, shape: SCNPhysicsShape(node: ballNode))
+        let physicsBody = SCNPhysicsBody(type: SCNPhysicsBodyType.dynamic, shape: SCNPhysicsShape(node: ballNode, options: [SCNPhysicsShape.Option.collisionMargin: 0.01])) // .collisionMargin: 0.01 - точнее вычисляются столкновения.
         ballNode.physicsBody = physicsBody // Физическое тело в виде мяча, связанное с ballNode (узлом мяча). Поскольку оно динамическое, на него действуют различные силы (например, сила тяжести). Чтобы физическое тело существовало, в ноде обязательно должен быть объект, то есть геометрия. Т.о. в ноде не просто объект, а объект, являющийся динамическим телом.
         
         let power = Float(10) // Модуль силы.
